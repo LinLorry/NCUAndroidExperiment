@@ -1,0 +1,7 @@
+include ':datatransmit'
+include ':activitymanage'
+include ':logtest'
+include ':callback'
+include ':psychologicaltest'
+include ':app'
+rootProject.name = "ActivitiesAndComponents"

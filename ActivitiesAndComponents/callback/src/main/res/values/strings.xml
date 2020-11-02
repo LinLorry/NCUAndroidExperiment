@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">callback</string>
+    <string name="main_menu_configure">配置</string>
+    <string name="main_menu_exit">退出App</string>
+</resources>

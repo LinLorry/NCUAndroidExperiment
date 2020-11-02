@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ActivitiesAndComponents</string>
+    <string name="main_title">主菜单</string>
+    <string name="first_title">第一个页面</string>
+    <string name="second_title">第二个页面</string>
+    <string name="jump_to_main">跳转至主页面</string>
+    <string name="jump_to_first">跳转到第一个页面</string>
+    <string name="jump_to_second">跳转到第二个页面</string>
+    <string name="exit_str">退出</string>
+</resources>

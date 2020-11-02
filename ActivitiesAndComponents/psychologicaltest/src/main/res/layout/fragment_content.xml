@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:id="@+id/testLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/testText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textSize="20sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioGroup
+                android:id="@+id/firstTestRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                >
+
+                <RadioButton
+                    android:id="@+id/firstAnswerA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test1_answer_a"
+                    />
+
+                <RadioButton
+                    android:id="@+id/firstAnswerB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test1_answer_b"
+                    />
+
+                <RadioButton
+                    android:id="@+id/firstAnswerC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test1_answer_c"
+                    />
+
+                <RadioButton
+                    android:id="@+id/firstAnswerD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test1_answer_d"
+                    />
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/secondTestRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                >
+
+                <RadioButton
+                    android:id="@+id/secondAnswerA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test2_answer_a"
+                    />
+
+                <RadioButton
+                    android:id="@+id/secondAnswerB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test2_answer_b"
+                    />
+
+                <RadioButton
+                    android:id="@+id/secondAnswerC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/psychology_test2_answer_c"
+                    />
+            </RadioGroup>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/aboutText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="@string/title_help"
+        />
+
+    <LinearLayout
+        android:id="@+id/resultLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/firstResultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/un_test_hint"
+            />
+        <TextView
+            android:id="@+id/secondResultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/un_test_hint"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/finishHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/finish_hint"
+        android:visibility="invisible"
+        />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:background="#000" />
+</RelativeLayout>

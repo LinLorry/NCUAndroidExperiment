@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">心理测试应用实例</string>`
+    <string name="title_app">心理测试</string>
+
+    <string name="title_psychology_test1">拖延指数测验</string>
+    <string name="title_psychology_test2">急迫性指数测验</string>
+    <string name="title_psychology_about">关于APP</string>
+    <string name="title_exit">退出</string>
+    <string name="title_psychology_result">测试的结果</string>
+
+    <string-array name="psychology_test1">
+        <item>为了避免对棘手的难题采取行动，我于是寻找理由和借口。</item>
+        <item>为使困难的工作能被执行，对执行者下压力是必要的。</item>
+        <item>我经常采取折衷办法以避免或延缓不愉快的事是困难的工作。</item>
+        <item>我遭遇了太多足以妨碍完成重大任务的干扰与危机。</item>
+        <item>当被迫从事一项不愉快的决策时，我避免直截了当的答复。</item>
+        <item>我对重要的行动计划的追踪工作一般不予理会。</item>
+        <item>试图令他人为管理者执行不愉快的工作。</item>
+        <item>我经常将重要工作安排在下午处理，或者携回家里，以便在夜晚或周末处理它。</item>
+        <item>我在过分疲劳(或过分紧张、或过分泄气、或太受抑制)时，以致无法处理所面对的困难任务。</item>
+        <item>在着手处理一件艰难的任务之前，我喜欢清除桌上的每一个物件。</item>
+    </string-array>
+
+    <string name="psychology_test1_answer_a">A 非常同意</string>
+    <string name="psychology_test1_answer_b">B 略表同意</string>
+    <string name="psychology_test1_answer_c">C 略表不同意</string>
+    <string name="psychology_test1_answer_d">D 极不同意</string>
+
+    <string name="psychology_test1_result_1">你不是拖延者，偶尔有拖延习惯！</string>
+    <string name="psychology_test1_result_2">你有拖延的毛病，但不太严重！</string>
+    <string name="psychology_test1_result_3">或许你有很严重的拖延习惯!</string>
+
+
+    <string-array name="psychology_test2">
+        <item>我在压力之下表现最好。</item>
+        <item>我常归咎外在环境太匆忙或紧张，以致无法作深入的自我反省。</item>
+        <item>我常因周围的人或事动作太慢而不耐烦。我讨厌等待或排队。</item>
+        <item>我休息时会觉得不安。</item>
+        <item>我似乎永远在赶时间。</item>
+        <item>我常为了完成某项事情而拒人于千里之外。</item>
+        <item>我只要片刻没和办公室联系就觉得不安。</item>
+        <item>我在做一件事时常会想到另一件事。</item>
+        <item>我处理危机时表现最好。</item>
+        <item>处理突发状况的兴奋感，似乎比慢工出细活更让我觉得有成就。</item>
+        <item>我常为了处理突发状况，牺牲和亲友共处时间。</item>
+        <item>当我为了处理突发状况，必须取消约会或中途离开，我认为别人应该能谅解。</item>
+        <item>我觉得处理突发状况让一天的生活更有意义。</item>
+        <item>我常边工作边吃饭。</item>
+        <item>我一直认为总有一天能做我真正想做的事情。</item>
+        <item>一天下来办公桌上“已办”文件如果堆得高高的，我会很有成就感。</item>
+    </string-array>
+
+    <string name="psychology_test2_answer_a">A 从不</string>
+    <string name="psychology_test2_answer_b">B 有时候</string>
+    <string name="psychology_test2_answer_c">C 常常</string>
+
+    <string name="psychology_test2_result_1">低度急迫性心态</string>
+    <string name="psychology_test2_result_2">强烈急迫性心态</string>
+    <string name="psychology_test2_result_3">已经到了严重急迫性的程度</string>
+
+    <string name="finish_hint">你已经完成了所有测试</string>
+    <string name="un_test_hint">你还没有进行这项测试</string>
+
+    <string name="title_help">心理测试APP\n作者：\n南昌大学信息工程学院\n\n
+        素材来源：https://wenku.baidu.com/view/3881170fbf23482fb4daa58da0116c175f0e1efe.html\n\n
+        时间：二零二零年六月三十日
+    </string>
+</resources>
