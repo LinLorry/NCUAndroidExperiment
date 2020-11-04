@@ -1,3 +1,3 @@
-include ':movielist'
-include ':app'
+include ':recyclerviewexperiment'
+include ':listviewexperiment'
 rootProject.name = "Android-UI"
