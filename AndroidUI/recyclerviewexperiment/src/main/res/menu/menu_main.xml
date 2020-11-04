@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="cn.edu.ncu.recyclerviewexperiment.MainActivity">
+    <item android:id="@+id/menuAdd"
+        android:title="@string/menu_add_movie" />
+    <item android:id="@+id/menuRemove"
+        android:title="@string/menu_remove_movie" />
+</menu>
