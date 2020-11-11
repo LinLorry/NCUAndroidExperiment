@@ -1,3 +1,4 @@
+include ':musicplayer'
 include ':recyclerviewexperiment'
 include ':listviewexperiment'
 rootProject.name = "Android-UI"
