@@ -11,8 +11,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : BaseActivity() {
+
+    private lateinit var mainViewModel: MainViewModel
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -34,6 +37,9 @@ class MainActivity : BaseActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        mainViewModel.loadMusics(assets)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

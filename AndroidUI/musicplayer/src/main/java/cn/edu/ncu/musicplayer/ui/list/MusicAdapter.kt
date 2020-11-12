@@ -1,6 +1,5 @@
 package cn.edu.ncu.musicplayer.ui.list
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import cn.edu.ncu.musicplayer.MainViewModel
 import cn.edu.ncu.musicplayer.R
 import cn.edu.ncu.musicplayer.data.Music
 
-class MusicAdapter(private val musics: List<Music>) :
+class MusicAdapter(private val musics: List<Music>, private val mainViewModel: MainViewModel) :
     RecyclerView.Adapter<MusicAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -23,8 +23,7 @@ class MusicAdapter(private val musics: List<Music>) :
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val music = musics[position]
-                    Log.d(this::class.simpleName, music.toString())
+                    mainViewModel.setMusic(position)
                     it.findNavController().navigate(R.id.action_nav_music_list_to_playerFragment)
                 }
             }
