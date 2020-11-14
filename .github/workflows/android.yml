@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  ActivitiesAndComponents build:
+  ActivitiesAndComponents_build:
 
     runs-on: ubuntu-latest
 
