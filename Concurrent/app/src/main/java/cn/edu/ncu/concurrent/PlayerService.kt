@@ -29,6 +29,13 @@ class PlayerService : Service() {
 
     private val mediaPlayer = MediaPlayer()
 
+    override fun onCreate() {
+        mediaPlayer.setOnCompletionListener {
+            playerBinder.skipForward()
+        }
+        super.onCreate()
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
         return playerBinder
     }
