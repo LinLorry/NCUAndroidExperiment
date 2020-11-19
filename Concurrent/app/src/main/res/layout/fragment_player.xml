@@ -130,11 +130,11 @@
             app:srcCompat="@drawable/repeat_line" />
 
         <ImageView
-            android:id="@+id/rewindImg"
+            android:id="@+id/skipBackImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/rewind_line" />
+            app:srcCompat="@drawable/skip_back_line" />
 
         <ImageView
             android:id="@+id/playImg"
@@ -144,11 +144,11 @@
             app:srcCompat="@drawable/play_line" />
 
         <ImageView
-            android:id="@+id/speedImg"
+            android:id="@+id/skipForwardImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/speed_line" />
+            app:srcCompat="@drawable/skip_forward_line" />
 
         <ImageView
             android:id="@+id/menuImg"

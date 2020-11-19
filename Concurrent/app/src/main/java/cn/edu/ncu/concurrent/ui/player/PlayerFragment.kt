@@ -7,49 +7,56 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import cn.edu.ncu.concurrent.LineSequence
 import cn.edu.ncu.concurrent.MainActivity
-import cn.edu.ncu.concurrent.MainViewModel
 import cn.edu.ncu.concurrent.R
+import cn.edu.ncu.concurrent.data.Music
 
 
 class PlayerFragment : Fragment() {
-
-    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_player, container, false)
-        val musicImg: ImageView = root.findViewById(R.id.musicImg)
-        val musicTitle: TextView = root.findViewById(R.id.musicTitle)
+
         val playImg: ImageView = root.findViewById(R.id.playImg)
+        val skipBackImg: ImageView = root.findViewById(R.id.skipBackImg)
+        val skipForwardImg: ImageView = root.findViewById(R.id.skipForwardImg)
         val lineSequenceImg: ImageView = root.findViewById(R.id.lineSequenceImg)
 
         val a = activity as MainActivity
-        mainViewModel =
-            ViewModelProvider(a).get(MainViewModel::class.java)
+        val service = a.playerBinder
+        val music = service.playMusic.value ?: throw java.lang.NullPointerException("")
 
-        val music = mainViewModel.playMusic.value ?: throw java.lang.NullPointerException("")
-
-        musicImg.setImageBitmap(music.imgBitMap)
-        musicTitle.text = music.title
+        setMusic(music, root)
 
         playImg.setOnClickListener {
-            if (mainViewModel.isPlaying()) {
-                mainViewModel.pause()
+            if (service.isPlaying()) {
+                service.pause()
             } else {
-                mainViewModel.start()
+                service.start()
             }
         }
 
-        lineSequenceImg.setOnClickListener {
-            mainViewModel.nextLineSequence()
+        skipBackImg.setOnClickListener {
+            service.skipBack()
         }
 
-        mainViewModel.play.observe(viewLifecycleOwner) {
+        skipForwardImg.setOnClickListener {
+            service.skipForward()
+        }
+
+        lineSequenceImg.setOnClickListener {
+            service.nextLineSequence()
+        }
+
+        service.playMusic.observe(viewLifecycleOwner) {
+            setMusic(it, root)
+        }
+
+        service.play.observe(viewLifecycleOwner) {
             if (it) {
                 playImg.setImageResource(R.drawable.pause_line)
             } else {
@@ -57,18 +64,18 @@ class PlayerFragment : Fragment() {
             }
         }
 
-        mainViewModel.lineSequence.observe(viewLifecycleOwner) {
+        service.lineSequence.observe(viewLifecycleOwner) {
             when (it) {
                 LineSequence.ORDER -> {
-                    lineSequenceImg.setImageResource(R.drawable.shuffle_line)
+                    lineSequenceImg.setImageResource(R.drawable.repeat_line)
 //                    Toast.makeText(activity, "shuffle", Toast.LENGTH_SHORT).show()
                 }
                 LineSequence.SHUFFLE -> {
-                    lineSequenceImg.setImageResource(R.drawable.repeat_one_line)
+                    lineSequenceImg.setImageResource(R.drawable.shuffle_line)
 //                    Toast.makeText(activity, "loop one", Toast.LENGTH_SHORT).show()
                 }
                 LineSequence.REPEAT -> {
-                    lineSequenceImg.setImageResource(R.drawable.repeat_line)
+                    lineSequenceImg.setImageResource(R.drawable.repeat_one_line)
 //                    Toast.makeText(activity, "loop all", Toast.LENGTH_SHORT).show()
                 }
                 null -> {}
@@ -85,5 +92,13 @@ class PlayerFragment : Fragment() {
         }*/
 
         return root
+    }
+
+    private fun setMusic(music: Music, root: View) {
+        val musicImg: ImageView = root.findViewById(R.id.musicImg)
+        val musicTitle: TextView = root.findViewById(R.id.musicTitle)
+
+        musicImg.setImageBitmap(music.imgBitMap)
+        musicTitle.text = music.title
     }
 }

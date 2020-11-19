@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.edu.ncu.concurrent.MainActivity
 import cn.edu.ncu.concurrent.MainViewModel
 import cn.edu.ncu.concurrent.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -29,15 +30,12 @@ class MusicListFragment : Fragment() {
         val musicRecyclerView: RecyclerView = root.findViewById(R.id.musicListRecyclerView)
         musicRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        activity.let {
-            if (it == null) {
-                throw NullPointerException("List Fragment activity is null")
-            }
-            mainViewModel =
-                ViewModelProvider(it).get(MainViewModel::class.java)
-            mainViewModel.musics.value
-        }?.let {
-            musicAdapter = MusicAdapter(it, mainViewModel)
+        val a = activity as MainActivity
+        val service = a.playerBinder
+        mainViewModel = ViewModelProvider(a).get(MainViewModel::class.java)
+
+        mainViewModel.musics.value?.let {
+            musicAdapter = MusicAdapter(it, service)
             musicRecyclerView.adapter = musicAdapter
         }
 

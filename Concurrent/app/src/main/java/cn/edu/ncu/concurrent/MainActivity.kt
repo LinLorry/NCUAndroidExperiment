@@ -31,15 +31,6 @@ class MainActivity : BaseActivity() {
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             playerBinder = service as PlayerService.PlayerBinder
-
-            /*val music = mainViewModel.playMusic.value
-                    ?: throw  NullPointerException("Start player with null music")
-
-            val fd = assets.openFd(music.path)
-
-            playerBinder.reset()
-            playerBinder.setDataSource(fd)
-            playerBinder.prepare()*/
             bind = true
         }
 
@@ -66,35 +57,11 @@ class MainActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        bindService(Intent(this, PlayerService::class.java), connection, Context.BIND_AUTO_CREATE)
+        bindService(Intent(this, PlayerService::class.java),
+            connection, Context.BIND_AUTO_CREATE)
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.loadMusics(assets)
-        mainViewModel.playMusic.observe(this, {
-            if (bind) {
-                val fd = assets.openFd(it.path)
-
-                playerBinder.reset()
-                playerBinder.setDataSource(fd)
-                playerBinder.prepare()
-                if (mainViewModel.isPlaying()) {
-                    playerBinder.start()
-                } else {
-                    mainViewModel.start()
-                }
-
-            }
-        })
-
-        mainViewModel.play.observe(this, {
-            if (bind) {
-                if (it && !playerBinder.isPlaying()) {
-                    playerBinder.start()
-                } else if (playerBinder.isPlaying()) {
-                    playerBinder.pause()
-                }
-            }
-        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
