@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import cn.edu.ncu.concurrent.LineSequence
 import cn.edu.ncu.concurrent.MainActivity
 import cn.edu.ncu.concurrent.R
@@ -26,11 +27,10 @@ class PlayerFragment : Fragment() {
         val skipForwardImg: ImageView = root.findViewById(R.id.skipForwardImg)
         val lineSequenceImg: ImageView = root.findViewById(R.id.lineSequenceImg)
 
-        val a = activity as MainActivity
+        val a = requireActivity() as MainActivity
         val service = a.playerBinder
         val music = service.playMusic.value ?: throw java.lang.NullPointerException("")
-
-        setMusic(music, root)
+        setMusic(music, root, a.supportActionBar)
 
         playImg.setOnClickListener {
             if (service.isPlaying()) {
@@ -53,7 +53,7 @@ class PlayerFragment : Fragment() {
         }
 
         service.playMusic.observe(viewLifecycleOwner) {
-            setMusic(it, root)
+            setMusic(it, root, a.supportActionBar)
         }
 
         service.play.observe(viewLifecycleOwner) {
@@ -94,11 +94,14 @@ class PlayerFragment : Fragment() {
         return root
     }
 
-    private fun setMusic(music: Music, root: View) {
+    private fun setMusic(music: Music, root: View, supportActionBar: ActionBar?) {
         val musicImg: ImageView = root.findViewById(R.id.musicImg)
         val musicTitle: TextView = root.findViewById(R.id.musicTitle)
 
         musicImg.setImageBitmap(music.imgBitMap)
         musicTitle.text = music.title
+        supportActionBar?.title = music.title
+//        (requireActivity() as MainActivity).title = music.title
+
     }
 }
