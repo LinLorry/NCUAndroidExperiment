@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="cn.edu.ncu.concurrent.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@id/nav_user"
+        android:name="cn.edu.ncu.concurrent.ui.user.UserFragment"
+        android:label="@string/menu_user"
+        tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@id/nav_music_list"
+        android:name="cn.edu.ncu.concurrent.ui.list.MusicListFragment"
+        android:label="@string/menu_music_list"
+        tools:layout="@layout/fragment_music_list">
+
+        <action
+            android:id="@+id/action_nav_music_list_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="cn.edu.ncu.concurrent.ui.player.PlayerFragment"
+        tools:layout="@layout/fragment_player" />
+</navigation>
