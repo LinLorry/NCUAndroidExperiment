@@ -115,24 +115,13 @@ class PlayerFragment : Fragment() {
             }
         }
 
-        /*favImg.setOnClickListener {
-            if (fav) {
-                favImg.setImageResource(R.drawable.collection_fill)
-            } else {
-                favImg.setImageResource(R.drawable.favorite)
-            }
-            fav = !fav
-        }*/
-
         return root
     }
 
     private fun setMusic(music: Music, root: View, supportActionBar: ActionBar?) {
         val musicImg: ImageView = root.findViewById(R.id.musicImg)
-        val musicTitle: TextView = root.findViewById(R.id.musicTitle)
 
         musicImg.setImageBitmap(music.imgBitMap)
-        musicTitle.text = music.title
         supportActionBar?.title = music.title
     }
 }

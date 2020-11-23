@@ -16,87 +16,11 @@
         android:layout_marginStart="64dp"
         android:layout_marginEnd="64dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/musicTitle"
+        app:layout_constraintBottom_toTopOf="@+id/seekLinerLayout"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/music_img" />
-
-    <TextView
-        android:id="@+id/musicTitle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:text="Title"
-        app:layout_constraintBottom_toTopOf="@+id/lyrics"
-        app:layout_constraintDimensionRatio="20:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/lyrics"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        android:text="lyrics"
-        app:layout_constraintBottom_toTopOf="@+id/actionLinearLayout"
-
-        app:layout_constraintDimensionRatio="20:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/actionLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="5"
-
-        app:layout_constraintBottom_toTopOf="@+id/seekLinerLayout"
-        app:layout_constraintDimensionRatio="10:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/micImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/mic" />
-
-        <ImageView
-            android:id="@+id/favImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/favorite" />
-
-        <ImageView
-            android:id="@+id/downloadImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/download" />
-
-        <ImageView
-            android:id="@+id/commentImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/comment" />
-
-        <ImageView
-            android:id="@+id/elipsisImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/elipsis" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/seekLinerLayout"
