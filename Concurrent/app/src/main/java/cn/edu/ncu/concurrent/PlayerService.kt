@@ -25,9 +25,27 @@ class PlayerService : Service() {
 
     private val _lineSequence: MutableLiveData<LineSequence> = MutableLiveData(LineSequence.ORDER)
 
+    private val _currentPosition: MutableLiveData<Int> = MutableLiveData()
+
+    private val _duration: MutableLiveData<Int> = MutableLiveData()
+
     private val playerBinder = PlayerBinder()
 
     private val mediaPlayer = MediaPlayer()
+
+    private val changeCurrentRunnable = Runnable {
+        while (true) {
+            _currentPosition.postValue(mediaPlayer.currentPosition)
+            try {
+                Thread.sleep(300)
+            } catch (e: InterruptedException) {
+                _currentPosition.postValue(mediaPlayer.currentPosition)
+                break
+            }
+        }
+    }
+
+    private var changeCurrentThread: Thread = Thread(changeCurrentRunnable)
 
     override fun onCreate() {
         mediaPlayer.setOnCompletionListener {
@@ -54,6 +72,12 @@ class PlayerService : Service() {
         val lineSequence: LiveData<LineSequence>
             get() = _lineSequence
 
+        val currentPosition: LiveData<Int>
+            get() = _currentPosition
+
+        val duration: LiveData<Int>
+            get() = _duration
+
         fun setPosition(position: Int) : Boolean {
             val value = _musicList.value
 
@@ -66,6 +90,8 @@ class PlayerService : Service() {
             _playMusic.value = music
 
             val fd = assets.openFd(music.path)
+
+            mediaPlayer.reset()
             mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
 
             return true
@@ -79,28 +105,28 @@ class PlayerService : Service() {
 
         fun prepare() = mediaPlayer.prepare()
 
-        fun start() {
+        fun start(): Boolean {
             if (!mediaPlayer.isPlaying) {
+                _duration.value = mediaPlayer.duration
                 _play.value = true
                 mediaPlayer.start()
+
+                changeCurrentThread.interrupt()
+                changeCurrentThread = Thread(changeCurrentRunnable)
+                changeCurrentThread.start()
             }
+            return true
         }
 
         fun pause() {
             if (mediaPlayer.isPlaying) {
                 _play.value = false
                 mediaPlayer.pause()
+                changeCurrentThread.interrupt()
             }
         }
 
         fun seekTo(msec: Int) = mediaPlayer.seekTo(msec)
-
-        fun reset() {
-            if (_playMusic.value != null) {
-                _playMusic.value = null
-                mediaPlayer.reset()
-            }
-        }
 
         fun release() = mediaPlayer.release()
 
@@ -149,9 +175,7 @@ class PlayerService : Service() {
             mediaPlayer.reset()
 
             return if (setPosition(position)) {
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-                true
+                start()
             } else {
                 false
             }
