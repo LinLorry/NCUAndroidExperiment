@@ -13,9 +13,9 @@ import kotlin.random.Random
 
 class PlayerService : Service() {
 
-    private var position: Int = 0
-
     private val random = Random(System.currentTimeMillis())
+
+    private val _position: MutableLiveData<Int> = MutableLiveData(0)
 
     private val _playMusic: MutableLiveData<Music> = MutableLiveData()
 
@@ -60,6 +60,9 @@ class PlayerService : Service() {
 
     inner class PlayerBinder : Binder() {
 
+        val position: LiveData<Int>
+            get() = _position
+
         val musicList: LiveData<List<Music>>
             get() = _musicList
 
@@ -84,7 +87,7 @@ class PlayerService : Service() {
             if (value == null || position > value.size) {
                 return false
             }
-            this@PlayerService.position = position
+            _position.value = position
             val music = value[position]
 
             _playMusic.value = music
@@ -142,7 +145,7 @@ class PlayerService : Service() {
                 return false
             }
 
-            var position = this@PlayerService.position
+            var position = this.position.value!!
 
             when (lineSequence.value) {
                 LineSequence.ORDER -> {
@@ -175,6 +178,7 @@ class PlayerService : Service() {
             mediaPlayer.reset()
 
             return if (setPosition(position)) {
+                prepare()
                 start()
             } else {
                 false
