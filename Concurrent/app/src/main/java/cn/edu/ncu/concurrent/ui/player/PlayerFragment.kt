@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import cn.edu.ncu.concurrent.LineSequence
@@ -26,11 +27,27 @@ class PlayerFragment : Fragment() {
         val skipBackImg: ImageView = root.findViewById(R.id.skipBackImg)
         val skipForwardImg: ImageView = root.findViewById(R.id.skipForwardImg)
         val lineSequenceImg: ImageView = root.findViewById(R.id.lineSequenceImg)
+        val seekBar: SeekBar = root.findViewById(R.id.musicSeekBar)
+        val currentPositionTextView: TextView = root.findViewById(R.id.currentPositionTextView)
+        val durationTextView: TextView = root.findViewById(R.id.durationTextView)
 
         val a = requireActivity() as MainActivity
         val service = a.playerBinder
         val music = service.playMusic.value ?: throw java.lang.NullPointerException("")
         setMusic(music, root, a.supportActionBar)
+
+        service.duration.value?.let { seekBar.max = it }
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    service.seekTo(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) { }
+        })
 
         playImg.setOnClickListener {
             if (service.isPlaying()) {
@@ -56,12 +73,28 @@ class PlayerFragment : Fragment() {
             setMusic(it, root, a.supportActionBar)
         }
 
+        service.duration.observe(viewLifecycleOwner) {
+            seekBar.max = it
+            val minute = it / 60000
+            val second = (it / 1000) % 60
+            val text =  String.format("%02d:%02d", minute, second)
+            durationTextView.text = text
+        }
+
         service.play.observe(viewLifecycleOwner) {
             if (it) {
                 playImg.setImageResource(R.drawable.pause_line)
             } else {
                 playImg.setImageResource(R.drawable.play_line)
             }
+        }
+
+        service.currentPosition.observe(viewLifecycleOwner) {
+            seekBar.progress = it
+            val minute = it / 60000
+            val second = (it / 1000) % 60
+            val text =  String.format("%02d:%02d", minute, second)
+            currentPositionTextView.text = text
         }
 
         service.lineSequence.observe(viewLifecycleOwner) {
@@ -101,7 +134,5 @@ class PlayerFragment : Fragment() {
         musicImg.setImageBitmap(music.imgBitMap)
         musicTitle.text = music.title
         supportActionBar?.title = music.title
-//        (requireActivity() as MainActivity).title = music.title
-
     }
 }

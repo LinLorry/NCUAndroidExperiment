@@ -55,7 +55,7 @@
         android:orientation="horizontal"
         android:weightSum="5"
 
-        app:layout_constraintBottom_toTopOf="@+id/musicProcess"
+        app:layout_constraintBottom_toTopOf="@+id/seekLinerLayout"
         app:layout_constraintDimensionRatio="10:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -98,17 +98,37 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/musicProcess"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+    <LinearLayout
+        android:id="@+id/seekLinerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginBottom="32dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintDimensionRatio="h,10:1"
         app:layout_constraintBottom_toTopOf="@+id/mediaControlLinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/currentPositionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <SeekBar
+            android:id="@+id/musicSeekBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintHorizontal_bias="0.0" />
+        <TextView
+            android:id="@+id/durationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/mediaControlLinearLayout"
