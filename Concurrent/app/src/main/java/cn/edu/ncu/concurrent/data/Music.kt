@@ -7,5 +7,6 @@ data class Music(
         val path: String,
         val title: String, val album: String?,
         val mime: String?, val artist: String?,
-        val date: String?, val imgBitMap: Bitmap
+        val date: String?, val imgBitMap: Bitmap,
+        val lyric: Lyric?
 ) : Serializable
