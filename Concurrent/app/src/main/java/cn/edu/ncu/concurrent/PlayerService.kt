@@ -15,7 +15,7 @@ class PlayerService : Service() {
 
     private val random = Random(System.currentTimeMillis())
 
-    private val _position: MutableLiveData<Int> = MutableLiveData(0)
+    private val _position: MutableLiveData<Int> = MutableLiveData(null)
 
     private val _playMusic: MutableLiveData<Music> = MutableLiveData()
 
