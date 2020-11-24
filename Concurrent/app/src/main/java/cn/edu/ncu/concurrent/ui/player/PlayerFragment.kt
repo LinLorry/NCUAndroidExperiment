@@ -1,7 +1,7 @@
 package cn.edu.ncu.concurrent.ui.player
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +9,10 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import cn.edu.ncu.concurrent.LineSequence
 import cn.edu.ncu.concurrent.MainActivity
 import cn.edu.ncu.concurrent.R
@@ -17,12 +21,20 @@ import cn.edu.ncu.concurrent.data.Music
 
 class PlayerFragment : Fragment() {
 
+    private var showImgOrLyric = true
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_player, container, false)
+        val a = requireActivity() as MainActivity
+        val service = a.playerBinder
+        val music = service.playMusic.value ?: throw java.lang.NullPointerException("")
 
+        val musicImgAndLyricConstraintLayout: ConstraintLayout =
+                root.findViewById(R.id.musicImgAndLyricConstraintLayout)
+        val musicImg: ImageView = root.findViewById(R.id.musicImg)
         val playImg: ImageView = root.findViewById(R.id.playImg)
         val skipBackImg: ImageView = root.findViewById(R.id.skipBackImg)
         val skipForwardImg: ImageView = root.findViewById(R.id.skipForwardImg)
@@ -30,10 +42,12 @@ class PlayerFragment : Fragment() {
         val seekBar: SeekBar = root.findViewById(R.id.musicSeekBar)
         val currentPositionTextView: TextView = root.findViewById(R.id.currentPositionTextView)
         val durationTextView: TextView = root.findViewById(R.id.durationTextView)
+        val musicLyricRecyclerView: RecyclerView = root.findViewById(R.id.musicLyricRecyclerView)
+        val adapter = LyricAdapter(music, service)
 
-        val a = requireActivity() as MainActivity
-        val service = a.playerBinder
-        val music = service.playMusic.value ?: throw java.lang.NullPointerException("")
+        musicLyricRecyclerView.layoutManager = LinearLayoutManager(activity)
+        musicLyricRecyclerView.adapter = adapter
+
         setMusic(music, root, a.supportActionBar)
 
         service.duration.value?.let { seekBar.max = it }
@@ -44,10 +58,22 @@ class PlayerFragment : Fragment() {
                 }
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) { }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
+        musicImgAndLyricConstraintLayout.setOnClickListener {
+            Log.d(this::class.simpleName, "$showImgOrLyric")
+            if (showImgOrLyric) {
+                musicImg.visibility = View.INVISIBLE
+                musicLyricRecyclerView.visibility = View.VISIBLE
+            } else {
+                musicImg.visibility = View.VISIBLE
+                musicLyricRecyclerView.visibility = View.INVISIBLE
+            }
+            showImgOrLyric = !showImgOrLyric
+        }
 
         playImg.setOnClickListener {
             if (service.isPlaying()) {
@@ -57,27 +83,23 @@ class PlayerFragment : Fragment() {
             }
         }
 
-        skipBackImg.setOnClickListener {
-            service.skipBack()
-        }
+        skipBackImg.setOnClickListener { service.skipBack() }
 
-        skipForwardImg.setOnClickListener {
-            service.skipForward()
-        }
+        skipForwardImg.setOnClickListener { service.skipForward() }
 
-        lineSequenceImg.setOnClickListener {
-            service.nextLineSequence()
-        }
+        lineSequenceImg.setOnClickListener { service.nextLineSequence() }
 
         service.playMusic.observe(viewLifecycleOwner) {
             setMusic(it, root, a.supportActionBar)
+            adapter.music = it
+            adapter.notifyDataSetChanged()
         }
 
         service.duration.observe(viewLifecycleOwner) {
             seekBar.max = it
             val minute = it / 60000
             val second = (it / 1000) % 60
-            val text =  String.format("%02d:%02d", minute, second)
+            val text = String.format("%02d:%02d", minute, second)
             durationTextView.text = text
         }
 
@@ -93,8 +115,13 @@ class PlayerFragment : Fragment() {
             seekBar.progress = it
             val minute = it / 60000
             val second = (it / 1000) % 60
-            val text =  String.format("%02d:%02d", minute, second)
+            val text = String.format("%02d:%02d", minute, second)
             currentPositionTextView.text = text
+
+            service.playMusic.value?.lyric?.getPositionByTimeRange(it)?.let { position ->
+                (musicLyricRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+                adapter.notifyDataSetChanged()
+            }
         }
 
         service.lineSequence.observe(viewLifecycleOwner) {

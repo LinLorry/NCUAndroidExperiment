@@ -1,11 +1,11 @@
 package cn.edu.ncu.concurrent.data
 
+import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class Lyric {
 
-    private val map: HashMap<Int, Int> = HashMap()
+    private val map: TreeMap<Int, Int> = TreeMap()
 
     private val list: ArrayList<Pair<Int, ArrayList<String>>> = ArrayList()
 
@@ -28,14 +28,7 @@ class Lyric {
         }
     }
 
-    fun getByTime(time: Int): List<String>? {
-        val position = map[time]
-        return if (position != null) {
-            list[position].second
-        } else {
-            null
-        }
-    }
+    fun getPositionByTimeRange(time: Int): Int? = map.lowerEntry(time)?.value
 
     fun getByPosition(position: Int): Pair<Int, List<String>>? {
         return if (position < size) {
