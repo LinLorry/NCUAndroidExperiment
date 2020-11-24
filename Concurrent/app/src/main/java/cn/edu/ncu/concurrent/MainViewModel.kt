@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import cn.edu.ncu.concurrent.data.Lyric
 import cn.edu.ncu.concurrent.data.Music
 import org.json.JSONObject
+import java.io.FileNotFoundException
 import java.nio.charset.Charset
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
@@ -94,6 +95,8 @@ class MainViewModel : ViewModel() {
             }
 
             return lyric
+        } catch (e: FileNotFoundException) {
+            return null
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.stackTraceToString())
             return null
