@@ -1,11 +1,13 @@
 package cn.edu.ncu.concurrent.ui.list
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.edu.ncu.concurrent.MainActivity
@@ -34,8 +36,27 @@ class MusicListFragment : Fragment() {
         val service = a.playerBinder
         mainViewModel = ViewModelProvider(a).get(MainViewModel::class.java)
 
-        mainViewModel.musics.value?.let {
-            musicAdapter = MusicAdapter(it, service)
+        mainViewModel.musics.value?.let { musics ->
+            musicAdapter = MusicAdapter(musics)
+            musicAdapter.setOnClickListener {
+                val position = musicRecyclerView.getChildAdapterPosition(it)
+                if (position != RecyclerView.NO_POSITION) {
+
+                    if (position != service.position.value) {
+                        service.setPlayMusicList(musics)
+                        service.pause()
+
+                        if (service.setPosition(position)) {
+                            service.prepare()
+                            service.start()
+                        } else {
+                            Log.d(this::class.simpleName, "Set service music failed")
+                        }
+                    }
+
+                    it.findNavController().navigate(R.id.action_nav_music_list_to_playerFragment)
+                }
+            }
             musicRecyclerView.adapter = musicAdapter
         }
 
