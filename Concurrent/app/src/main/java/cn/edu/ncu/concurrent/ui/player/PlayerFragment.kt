@@ -1,16 +1,15 @@
 package cn.edu.ncu.concurrent.ui.player
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.edu.ncu.concurrent.LineSequence
@@ -21,8 +20,9 @@ import cn.edu.ncu.concurrent.data.Music
 
 class PlayerFragment : Fragment() {
 
-    private var showImgOrLyric = true
+    private lateinit var playerViewModel: PlayerViewModel
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -31,6 +31,7 @@ class PlayerFragment : Fragment() {
         val a = requireActivity() as MainActivity
         val service = a.playerBinder
         val music = service.playMusic.value ?: throw java.lang.NullPointerException("")
+        playerViewModel = ViewModelProvider(this).get(PlayerViewModel::class.java)
 
         val musicImgAndLyricConstraintLayout: ConstraintLayout =
                 root.findViewById(R.id.musicImgAndLyricConstraintLayout)
@@ -45,12 +46,29 @@ class PlayerFragment : Fragment() {
         val musicLyricRecyclerView: RecyclerView = root.findViewById(R.id.musicLyricRecyclerView)
         val adapter = LyricAdapter(music, service)
 
+        val gestureDetector = GestureDetector(a,
+                object : GestureDetector.SimpleOnGestureListener() {
+
+                    override fun onDoubleTap(e: MotionEvent?): Boolean = changImgOrLyric()
+
+
+                    fun changImgOrLyric(): Boolean {
+                        playerViewModel.changeShow()
+                        return true
+                    }
+                })
+
         musicLyricRecyclerView.layoutManager = LinearLayoutManager(activity)
         musicLyricRecyclerView.adapter = adapter
 
         setMusic(music, root, a.supportActionBar)
 
         service.duration.value?.let { seekBar.max = it }
+
+        musicImgAndLyricConstraintLayout.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+
+        musicLyricRecyclerView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -62,18 +80,6 @@ class PlayerFragment : Fragment() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-
-        musicImgAndLyricConstraintLayout.setOnClickListener {
-            Log.d(this::class.simpleName, "$showImgOrLyric")
-            if (showImgOrLyric) {
-                musicImg.visibility = View.INVISIBLE
-                musicLyricRecyclerView.visibility = View.VISIBLE
-            } else {
-                musicImg.visibility = View.VISIBLE
-                musicLyricRecyclerView.visibility = View.INVISIBLE
-            }
-            showImgOrLyric = !showImgOrLyric
-        }
 
         playImg.setOnClickListener {
             if (service.isPlaying()) {
@@ -88,6 +94,16 @@ class PlayerFragment : Fragment() {
         skipForwardImg.setOnClickListener { service.skipForward() }
 
         lineSequenceImg.setOnClickListener { service.nextLineSequence() }
+
+        playerViewModel.showImgOrLyric.observe(viewLifecycleOwner) {
+            if (it) {
+                musicImg.visibility = View.INVISIBLE
+                musicLyricRecyclerView.visibility = View.VISIBLE
+            } else {
+                musicImg.visibility = View.VISIBLE
+                musicLyricRecyclerView.visibility = View.INVISIBLE
+            }
+        }
 
         service.playMusic.observe(viewLifecycleOwner) {
             setMusic(it, root, a.supportActionBar)
