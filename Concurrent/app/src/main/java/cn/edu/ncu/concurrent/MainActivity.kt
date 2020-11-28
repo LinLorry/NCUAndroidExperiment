@@ -14,7 +14,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import cn.edu.ncu.musicplayer.BaseActivity
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : BaseActivity() {

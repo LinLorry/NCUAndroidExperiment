@@ -1,8 +1,9 @@
-package cn.edu.ncu.musicplayer
+package cn.edu.ncu.concurrent
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import cn.edu.ncu.musicplayer.ActivityCollector
 
 open class BaseActivity : AppCompatActivity() {
 
