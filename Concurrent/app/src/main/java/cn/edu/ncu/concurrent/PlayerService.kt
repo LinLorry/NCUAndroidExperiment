@@ -1,17 +1,26 @@
 package cn.edu.ncu.concurrent
 
-import android.app.Service
+import android.app.*
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.edu.ncu.concurrent.data.Music
 import kotlin.random.Random
 
 class PlayerService : Service() {
+
+    companion object {
+        const val NOTIFY_ID = 1
+    }
 
     private val random = Random(System.currentTimeMillis())
 
@@ -33,6 +42,24 @@ class PlayerService : Service() {
 
     private val mediaPlayer = MediaPlayer()
 
+    private val playerReceiver = PlayerReceiver()
+
+    private var notify = true
+
+    private lateinit var views: RemoteViews
+
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    private val notificationBuilder: NotificationCompat.Builder by lazy {
+        NotificationCompat.Builder(this, "player")
+                .setShowWhen(false)
+                .setAutoCancel(false)
+                .setOnlyAlertOnce(true)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+    }
+
     private val changeCurrentRunnable = Runnable {
         while (true) {
             _currentPosition.postValue(mediaPlayer.currentPosition)
@@ -47,15 +74,65 @@ class PlayerService : Service() {
 
     private var changeCurrentThread: Thread = Thread(changeCurrentRunnable)
 
+    private val playIntent: PendingIntent by lazy {
+        PendingIntent.getBroadcast(this, 1,
+                Intent("cn.edy.ncu.concurrent.PlayService.play").apply { setPackage(packageName) },
+                PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+    private val skipForwardIntent: PendingIntent by lazy {
+        PendingIntent.getBroadcast(this, 1,
+                Intent("cn.edy.ncu.concurrent.PlayService.skipForward").apply { setPackage(packageName) },
+                PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private val skipBackIntent: PendingIntent by lazy {
+        PendingIntent.getBroadcast(this, 1,
+                Intent("cn.edy.ncu.concurrent.PlayService.skipBack").apply { setPackage(packageName) },
+                PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun initRemoteViews() {
+        views = RemoteViews(packageName, R.layout.player_notification)
+
+        views.setOnClickPendingIntent(R.id.playImg, playIntent)
+        views.setOnClickPendingIntent(R.id.skipForwardImg, skipForwardIntent)
+        views.setOnClickPendingIntent(R.id.skipBackImg, skipBackIntent)
+        _playMusic.value?.let {
+            views.setTextViewText(R.id.title, it.title)
+            views.setTextViewText(R.id.artist, it.artist)
+            views.setImageViewBitmap(R.id.musicImg, it.imgBitMap)
+        }
+        notificationBuilder.setContent(views)
+    }
+
     override fun onCreate() {
         mediaPlayer.setOnCompletionListener {
             playerBinder.skipForward()
         }
+        val channel = NotificationChannel("player", "播放器",
+                NotificationManager.IMPORTANCE_DEFAULT)
+        notificationManager.createNotificationChannel(channel)
+
+        val intentFilter =  IntentFilter().apply {
+            addAction("cn.edy.ncu.concurrent.PlayService.play")
+            addAction("cn.edy.ncu.concurrent.PlayService.skipForward")
+            addAction("cn.edy.ncu.concurrent.PlayService.skipBack")
+        }
+
+        registerReceiver(playerReceiver, intentFilter)
+
         super.onCreate()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         return playerBinder
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        unregisterReceiver(playerReceiver)
+        stopForeground(true)
     }
 
     inner class PlayerBinder : Binder() {
@@ -97,6 +174,8 @@ class PlayerService : Service() {
             mediaPlayer.reset()
             mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
 
+            initRemoteViews()
+
             return true
         }
 
@@ -117,6 +196,13 @@ class PlayerService : Service() {
                 changeCurrentThread.interrupt()
                 changeCurrentThread = Thread(changeCurrentRunnable)
                 changeCurrentThread.start()
+                views.setImageViewResource(R.id.playImg, R.drawable.pause_line)
+                if (notify) {
+                    startForeground(NOTIFY_ID, notificationBuilder.build())
+                    notify = !notify
+                } else {
+                    notificationManager.notify(NOTIFY_ID, notificationBuilder.build())
+                }
             }
             return true
         }
@@ -126,12 +212,12 @@ class PlayerService : Service() {
                 _play.value = false
                 mediaPlayer.pause()
                 changeCurrentThread.interrupt()
+                views.setImageViewResource(R.id.playImg, R.drawable.play_line)
+                notificationManager.notify(NOTIFY_ID, notificationBuilder.build())
             }
         }
 
         fun seekTo(msec: Int) = mediaPlayer.seekTo(msec)
-
-        fun release() = mediaPlayer.release()
 
         fun skipForward(): Boolean = changePlay(true)
 
@@ -195,6 +281,26 @@ class PlayerService : Service() {
                 }
                 LineSequence.REPEAT -> {
                     _lineSequence.value = LineSequence.ORDER
+                }
+            }
+        }
+    }
+
+    inner class PlayerReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                "cn.edy.ncu.concurrent.PlayService.play" -> {
+                    if (mediaPlayer.isPlaying) {
+                        playerBinder.pause()
+                    } else {
+                        playerBinder.start()
+                    }
+                }
+                "cn.edy.ncu.concurrent.PlayService.skipForward" -> {
+                    playerBinder.skipForward()
+                }
+                "cn.edy.ncu.concurrent.PlayService.skipBack" -> {
+                    playerBinder.skipBack()
                 }
             }
         }
