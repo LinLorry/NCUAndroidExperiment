@@ -58,7 +58,12 @@ class PlayerFragment : Fragment() {
                     }
                 })
 
-        musicLyricRecyclerView.layoutManager = LinearLayoutManager(activity)
+        musicLyricRecyclerView.layoutManager = object : LinearLayoutManager(activity) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
+
         musicLyricRecyclerView.adapter = adapter
 
         setMusic(music, root, a.supportActionBar)
