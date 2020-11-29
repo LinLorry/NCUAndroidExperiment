@@ -130,6 +130,7 @@ class PlayerService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        changeCurrentThread.interrupt()
         mediaPlayer.release()
         unregisterReceiver(playerReceiver)
         stopForeground(true)
