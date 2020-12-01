@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cn.edu.ncu.concurrent.data.Music
+import java.util.*
 import kotlin.random.Random
 
 class PlayerService : Service() {
@@ -28,7 +29,7 @@ class PlayerService : Service() {
 
     private val _playMusic: MutableLiveData<Music> = MutableLiveData()
 
-    private val _musicList: MutableLiveData<List<Music>> = MutableLiveData()
+    private val _musicList: MutableLiveData<List<Music>> = MutableLiveData(LinkedList())
 
     private val _play: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -181,7 +182,11 @@ class PlayerService : Service() {
         }
 
         fun setPlayMusicList(playMusicList: List<Music>) {
-            _musicList.value = playMusicList
+            val musics = _musicList.value as LinkedList<Music>
+            musics.clear()
+            for (music in playMusicList) {
+                musics.add(music)
+            }
         }
 
         fun isPlaying(): Boolean = mediaPlayer.isPlaying
