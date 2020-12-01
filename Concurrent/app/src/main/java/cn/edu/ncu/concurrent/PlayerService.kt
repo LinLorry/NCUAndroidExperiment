@@ -181,6 +181,46 @@ class PlayerService : Service() {
             return true
         }
 
+        fun removeByPosition(position: Int): Boolean {
+            val musics = _musicList.value as LinkedList<Music>
+            if (musics.size == 1 || musics.size <= position) {
+                return false
+            } else if (position == _position.value) {
+                mediaPlayer.pause()
+                mediaPlayer.reset()
+
+                val music = when (position) {
+                    musics.size - 1 -> {
+                        _position.value = position - 1
+                        musics[position - 1]
+                    }
+                    else -> musics[position + 1]
+                }
+                musics.removeAt(position)
+
+                _playMusic.value = music
+
+                val fd = assets.openFd(music.path)
+
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+
+                initRemoteViews()
+                if (_play.value == true) {
+                    prepare()
+                    start()
+                }
+            } else {
+                musics.removeAt(position)
+                val tmp = _position.value!!
+                if (position < tmp) {
+                    _position.value = tmp - 1
+                }
+            }
+
+            return true
+        }
+
         fun setPlayMusicList(playMusicList: List<Music>) {
             val musics = _musicList.value as LinkedList<Music>
             musics.clear()
