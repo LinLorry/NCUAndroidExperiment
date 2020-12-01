@@ -163,7 +163,7 @@ class PlayerService : Service() {
         fun setPosition(position: Int) : Boolean {
             val value = _musicList.value
 
-            if (value == null || position > value.size) {
+            if (value == null || position >= value.size) {
                 return false
             }
             _position.value = position
@@ -296,7 +296,7 @@ class PlayerService : Service() {
                 LineSequence.SHUFFLE -> {
                     val next = random.nextInt(musics.size)
                     position += next
-                    if (position > musics.size) {
+                    if (position >= musics.size) {
                         position -= musics.size
                     }
                 }
