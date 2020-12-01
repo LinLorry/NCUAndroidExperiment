@@ -47,6 +47,9 @@ class MusicListDialog(context: Context, private val musicList: List<Music>) : Di
             holder.titleTextView.text = musics[position].title
             itemClickListener?.let { holder.itemView.setOnClickListener(it) }
             removeClickListener?.let { holder.setOnRemoveClickListener(it) }
+            if (itemCount == 1) {
+                holder.removeImg.visibility = View.INVISIBLE
+            }
         }
 
         override fun getItemCount(): Int = musics.size
