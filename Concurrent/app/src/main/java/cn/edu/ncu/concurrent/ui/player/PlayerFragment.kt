@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.edu.ncu.concurrent.LineSequence
 import cn.edu.ncu.concurrent.MainActivity
+import cn.edu.ncu.concurrent.MusicListDialog
 import cn.edu.ncu.concurrent.R
 import cn.edu.ncu.concurrent.data.Music
 
@@ -40,11 +41,27 @@ class PlayerFragment : Fragment() {
         val skipBackImg: ImageView = root.findViewById(R.id.skipBackImg)
         val skipForwardImg: ImageView = root.findViewById(R.id.skipForwardImg)
         val lineSequenceImg: ImageView = root.findViewById(R.id.lineSequenceImg)
+        val menuImg: ImageView = root.findViewById(R.id.menuImg)
         val seekBar: SeekBar = root.findViewById(R.id.musicSeekBar)
         val currentPositionTextView: TextView = root.findViewById(R.id.currentPositionTextView)
         val durationTextView: TextView = root.findViewById(R.id.durationTextView)
         val musicLyricRecyclerView: RecyclerView = root.findViewById(R.id.musicLyricRecyclerView)
         val adapter = LyricAdapter(music, service)
+        val musicListDialog: MusicListDialog? =  service.musicList.value?.let { musicList ->
+            val dialog = MusicListDialog(a, musicList)
+            dialog.setOnItemClickListener {
+                val position = dialog.musicListRecyclerView.getChildAdapterPosition(it)
+                if (service.setPosition(position)) {
+                    service.prepare()
+                    service.start()
+                }
+            }
+            dialog.setOnRemoveClickListener {
+                service.removeByPosition(it)
+            }
+            return@let dialog
+        }
+
 
         val gestureDetector = GestureDetector(a,
                 object : GestureDetector.SimpleOnGestureListener() {
@@ -99,6 +116,10 @@ class PlayerFragment : Fragment() {
         skipForwardImg.setOnClickListener { service.skipForward() }
 
         lineSequenceImg.setOnClickListener { service.nextLineSequence() }
+
+        menuImg.setOnClickListener {
+            musicListDialog?.show()
+        }
 
         playerViewModel.showImgOrLyric.observe(viewLifecycleOwner) {
             if (it) {
